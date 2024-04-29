@@ -1,0 +1,40 @@
+import streamlit as st
+import pandas as pd
+from prophet import Prophet
+
+# Sample data (you can replace this with your own data)
+data = {
+    "ds": ["1/5/2019", "3/8/2019", "3/3/2019", "1/27/2019", "2/8/2019", "3/25/2019", "2/25/2019", "2/24/2019", "1/10/2019", "2/20/2019", "2/6/2019"],
+    "y": [548.9715, 80.22, 340.5255, 489.048, 634.3785, 627.6165, 433.692, 772.38, 76.146, 172.746, 60.816],
+}
+
+# Create DataFrame from sample data
+df = pd.DataFrame(data)
+
+# Convert "ds" column to datetime
+df["ds"] = pd.to_datetime(df["ds"])
+
+# Initialize Prophet model
+model = Prophet()
+
+# Fit the model
+model.fit(df)
+
+# Make future dataframe for forecasting (next 365 days)
+future = model.make_future_dataframe(periods=365)
+
+# Forecasting
+forecast = model.predict(future)
+
+# Streamlit app
+st.title("Prophet Forecast")
+
+# Plot forecast
+st.write("### Forecast Plot")
+fig1 = model.plot(forecast)
+st.pyplot(fig1)
+
+# Plot forecast components
+st.write("### Forecast Components Plot")
+fig2 = model.plot_components(forecast)
+st.pyplot(fig2)
